@@ -75,7 +75,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
         final MovieResult.Movie movie = movieList.get(i);
-        itemViewHolder.movieTitle.setText(movie.getTitle());
+        itemViewHolder.movieTitle.setText(movie.getTitle().concat("\n("+movie.getId()+")"));
         Picasso.get().load(MainActivity.IMAGE_BASE_URL + movie.getPosterPath()).into(itemViewHolder.movieIcon);
         if (getItemCount() - 1 <= i ){
             commonActionCallbacks.onLastElementReached();
