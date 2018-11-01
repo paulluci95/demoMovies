@@ -1,11 +1,9 @@
 package com.example.luci.movietrailerfinder.Views;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +34,6 @@ public class DisplaySettings extends DialogFragment {
     /** The current view type  */
     private ViewType currentViewType;
 
-    /** The context */
-    private Context context;
-
     /** The image representing list */
     @BindView(R.id.display_settings_dialog_list)
     ImageView listTypeImage;
@@ -50,31 +45,21 @@ public class DisplaySettings extends DialogFragment {
     /**
      * Closes the dialog after view type was selected
      */
-    void changeViewType() {
+    private void changeViewType() {
         viewTypeSelectedCallback.onViewTypeSelected(currentViewType);
         DisplaySettings.this.dismiss();
     }
 
     @OnClick({R.id.display_settings_dialog_carousel})
-    void carousel_view_type(View view){
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        listTypeImage.setBackgroundColor(ContextCompat.getColor(context, android.R.color.white));
+    void carousel_view_type(@SuppressWarnings("unused") View view){
         currentViewType = ViewType.CAROUSEL;
         changeViewType();
     }
 
     @OnClick({R.id.display_settings_dialog_list})
-    void list_view_type(View view){
-        view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        carouselTypeImage.setBackgroundColor(ContextCompat.getColor(context, android.R.color.white));
+    void list_view_type(@SuppressWarnings("unused") View view){
         currentViewType = ViewType.LIST;
         changeViewType();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
     }
 
     public void setSelectViewTypeCallback(ViewTypeSelectedCallback viewTypeCallback){
@@ -93,11 +78,5 @@ public class DisplaySettings extends DialogFragment {
         View rootView = inflater.inflate(R.layout.display_option_fragment, container, false);
         ButterKnife.bind(this,rootView);
         return rootView;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        this.context = null;
     }
 }

@@ -16,7 +16,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.luci.movietrailerfinder.Controller.CarouseAdapter;
+import com.example.luci.movietrailerfinder.Controller.CarouselAdapter;
 import com.example.luci.movietrailerfinder.Controller.CommonActionCallbacks;
 import com.example.luci.movietrailerfinder.Controller.MovieListAdapter;
 import com.example.luci.movietrailerfinder.Controller.RESTClientInterface;
@@ -41,25 +41,28 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Handles the user gestures and provides the user interface
+ */
 public class MainActivity extends AppCompatActivity {
 
     /** The tag for logs in current class*/
-    private static String TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getName();
 
     /** The base url of used API */
-    public static String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
 
     /** The base url for downloading images  */
-    public static String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/";
+    public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/";
 
     /** The key for API */
-    public static String API_KEY_TMDB = "1b430fab82377155e112c91eea9df99f";
+    public static final String API_KEY_TMDB = "1b430fab82377155e112c91eea9df99f";
 
     /** The key for youtube API */
-    public static String YOUTUBE_API_KEY = "AIzaSyA1iiKIRDbBvr4jsr77hVNncM4_7Pr6azU";
+    public static final String YOUTUBE_API_KEY = "AIzaSyA1iiKIRDbBvr4jsr77hVNncM4_7Pr6azU";
 
     /** Current page provided by API (20 items limitation) */
-    public int currentPage = 0;
+    private int currentPage = 0;
 
     /** The list of movies */
     private List<MovieResult.Movie> moviesList = new ArrayList<>();
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private MovieListAdapter movieListAdapter;
 
     /** The adapter of page view */
-    private CarouseAdapter carouseAdapter;
+    private CarouselAdapter carouselAdapter;
 
     /** The current view type selected by user */
     private ViewType currentViewType;
@@ -84,14 +87,15 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout flContainer;
 
     /** The reference of LayoutInflater */
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
 
     /** The listener for starting a video when a thumbnail from movie detail page is clicked */
-    TrailerAdapter.ThumbnailCallback thumbnailCallback = new TrailerAdapter.ThumbnailCallback() {
+    private final TrailerAdapter.ThumbnailCallback thumbnailCallback = new TrailerAdapter.ThumbnailCallback() {
         @Override
-        public void onThumbnailClick(final String movieId) {
+        public void onThumbnailClick(final String movieURLId) {
             YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
+            Objects.requireNonNull(MainActivity.this.getSupportActionBar()).hide();
             FragmentTransaction transaction = MainActivity.this.getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.main_view, youTubePlayerFragment).addToBackStack(null).commit();
 
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.player = player;
                         player.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                         player.setFullscreen(true);
-                        player.loadVideo(movieId);
+                        player.loadVideo(movieURLId);
                         player.play();
                     }
                 }
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     /** The listener for both display types */
-    CommonActionCallbacks commonActionCallbacks = new CommonActionCallbacks() {
+    private final CommonActionCallbacks commonActionCallbacks = new CommonActionCallbacks() {
         @Override
         public void onLastElementReached() {
             getMoviesList();
@@ -175,8 +179,8 @@ public class MainActivity extends AppCompatActivity {
                     if (movieListAdapter != null) {
                         movieListAdapter.notifyDataSetChanged();
                     }
-                    if (carouseAdapter != null) {
-                        carouseAdapter.notifyDataSetChanged();
+                    if (carouselAdapter != null) {
+                        carouselAdapter.notifyDataSetChanged();
                     }
                     currentPage = movieResult.getPage();
                 }
@@ -192,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Shows the dialog where the user will select wished display type
      */
-    void showSetDisplayDialog() {
+    private void showSetDisplayDialog() {
         DisplaySettings dialogFragment = new DisplaySettings();
         dialogFragment.setSelectViewTypeCallback(new DisplaySettings.ViewTypeSelectedCallback() {
             @Override
@@ -209,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param viewType The display type selected by user
      */
-    void loadDefaultView(ViewType viewType) {
+    private void loadDefaultView(ViewType viewType) {
         flContainer.removeAllViews();
         if (viewType == ViewType.LIST) {
             inflater.inflate(R.layout.list_movies, flContainer);
@@ -220,8 +224,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             inflater.inflate(R.layout.carousel_movies, flContainer);
             ViewPager viewPager = flContainer.findViewById(R.id.carousel_movies);
-            carouseAdapter = new CarouseAdapter(getApplicationContext(), moviesList, commonActionCallbacks);
-            viewPager.setAdapter(carouseAdapter);
+            carouselAdapter = new CarouselAdapter(moviesList, commonActionCallbacks);
+            viewPager.setAdapter(carouselAdapter);
         }
     }
 
@@ -238,13 +242,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles de back action (toolbar and system)
+     * Handles the back action (toolbar and system)
      */
-    public void handleBackAction(){
+    private void handleBackAction(){
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         loadDefaultView(currentViewType);
         if (player != null)
             player.release();
+        getSupportActionBar().show();
     }
 
     @Override

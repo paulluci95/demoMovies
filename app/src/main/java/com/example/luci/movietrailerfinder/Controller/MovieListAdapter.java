@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.luci.movietrailerfinder.Data.MovieResult;
+import com.example.luci.movietrailerfinder.MainActivity;
 import com.example.luci.movietrailerfinder.R;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +34,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
     /**
      * The view holder
      */
-    class ItemViewHolder extends RecyclerView.ViewHolder{
+    public class ItemViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.movie_item_image)
         ImageView movieIcon;
@@ -42,15 +43,21 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         TextView movieTitle;
 
         @BindView(R.id.list_item_container)
-        public ConstraintLayout container;
+        ConstraintLayout container;
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 
+    /**
+     * Constructor
+     *
+     * @param movieList The list of movies
+     * @param commonActionCallbacks The listener for item clicked and last element reached
+     *
+     */
     public MovieListAdapter(List<MovieResult.Movie> movieList, CommonActionCallbacks commonActionCallbacks) {
         this.movieList = movieList;
         this.commonActionCallbacks = commonActionCallbacks;
@@ -62,15 +69,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView = inflater.inflate(R.layout.movie_list_item, viewGroup, false);
-        ItemViewHolder viewHolder = new ItemViewHolder(contactView);
-        return viewHolder;
+        return new ItemViewHolder(contactView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
         final MovieResult.Movie movie = movieList.get(i);
         itemViewHolder.movieTitle.setText(movie.getTitle());
-        Picasso.get().load("https://image.tmdb.org/t/p/w500/"+ movie.getPosterPath()).into(itemViewHolder.movieIcon);
+        Picasso.get().load(MainActivity.IMAGE_BASE_URL + movie.getPosterPath()).into(itemViewHolder.movieIcon);
         if (getItemCount() - 1 <= i ){
             commonActionCallbacks.onLastElementReached();
         }

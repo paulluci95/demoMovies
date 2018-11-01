@@ -26,7 +26,7 @@ import static com.example.luci.movietrailerfinder.MainActivity.IMAGE_BASE_URL;
 public class DetailMovieFragment extends Fragment {
 
     /** Custom listener for thumbnail click */
-    TrailerAdapter.ThumbnailCallback thumbnailCallback;
+    private TrailerAdapter.ThumbnailCallback thumbnailCallback;
 
     /** The taped movie */
     private MovieResult.Movie movie;

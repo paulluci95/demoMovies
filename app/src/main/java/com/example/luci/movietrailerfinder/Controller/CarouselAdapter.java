@@ -1,6 +1,5 @@
 package com.example.luci.movietrailerfinder.Controller;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -20,10 +19,7 @@ import static com.example.luci.movietrailerfinder.MainActivity.IMAGE_BASE_URL;
 /**
  * Adapter for PageView
  */
-public class CarouseAdapter extends PagerAdapter {
-
-    /** The context */
-    private Context context;
+public class CarouselAdapter extends PagerAdapter {
 
     /** The list of movies */
     private List<MovieResult.Movie> movieList;
@@ -34,12 +30,10 @@ public class CarouseAdapter extends PagerAdapter {
     /**
      * The constructor
      *
-     * @param context The context
      * @param movieList The list of movies
      * @param commonActionCallbacks The listener for item clicked and last element reached
      */
-    public CarouseAdapter(Context context, List<MovieResult.Movie> movieList, CommonActionCallbacks commonActionCallbacks){
-        this.context = context;
+    public CarouselAdapter(List<MovieResult.Movie> movieList, CommonActionCallbacks commonActionCallbacks){
         this.movieList = movieList;
         this.commonActionCallbacks = commonActionCallbacks;
     }
@@ -58,11 +52,11 @@ public class CarouseAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         final MovieResult.Movie movie = movieList.get(position);
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(container.getContext());
         View movieView = inflater.inflate(R.layout.carousel_movie_item, container, false);
         TextView title = movieView.findViewById(R.id.carousel_title);
         ImageView icon = movieView.findViewById(R.id.carousel_image);
-        title.setText(movieList.get(position).getTitle());
+        title.setText(movie.getTitle());
         Picasso.get().load(IMAGE_BASE_URL + movie.getPosterPath()).into(icon);
         container.addView(movieView);
         if (getCount() - 1 <= position ) {

@@ -12,8 +12,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,14 +29,16 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ItemView
      * Interface for thumbnail click listener
      */
     public interface ThumbnailCallback {
-        void onThumbnailClick(String movieId);
+        /**
+         * Callback for thumbnail click event
+         *
+         * @param movieURLId The id from URL of youtube video
+         */
+        void onThumbnailClick(String movieURLId);
     }
 
-    /**
-     * The list of movies url id
-     */
-    private ArrayList<String> movieURLList = new ArrayList<String>(
-            Arrays.asList("u9Mv98Gr5pY", "9cBN9_9oK4A", "ek1ePFp-nBI", "pzD9zGcUNrw", "iPxGl3B2I4A", "X6waHtSgCTc", "eJU6S5KOsNI"));
+    /** The list of movies url id */
+    private List<String> movieURLList = Arrays.asList("u9Mv98Gr5pY", "9cBN9_9oK4A", "ek1ePFp-nBI", "pzD9zGcUNrw", "iPxGl3B2I4A", "X6waHtSgCTc", "eJU6S5KOsNI");
 
     /**
      * The listener for thumbnail tap action
@@ -104,10 +106,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ItemView
         return movieURLList.size();
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.trailer_item)
-        public YouTubeThumbnailView thumbnailView;
+        YouTubeThumbnailView thumbnailView;
 
         boolean readyForLoadingYoutubeThumbnail = true;
 
