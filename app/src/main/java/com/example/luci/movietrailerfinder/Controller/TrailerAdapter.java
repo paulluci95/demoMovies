@@ -66,12 +66,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ItemView
     @Override
     public void onBindViewHolder(@NonNull final ItemViewHolder itemViewHolder, int i) {
         final int position = i;
-        itemViewHolder.thumbnailView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                thumbnailCallback.onThumbnailClick(movieURLList.get(position));
-            }
-        });
+        itemViewHolder.thumbnailView.setOnClickListener(view -> thumbnailCallback.onThumbnailClick(movieURLList.get(position)));
         if (itemViewHolder.readyForLoadingYoutubeThumbnail) {
             itemViewHolder.readyForLoadingYoutubeThumbnail = false;
             itemViewHolder.thumbnailView.initialize(YOUTUBE_API_KEY, new YouTubeThumbnailView.OnInitializedListener() {

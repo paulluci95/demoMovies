@@ -62,12 +62,7 @@ public class CarouselAdapter extends PagerAdapter {
         if (getCount() - 1 <= position ) {
             commonActionCallbacks.onLastElementReached();
         }
-        movieView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commonActionCallbacks.onItemClicked(movie);
-            }
-        });
+        movieView.setOnClickListener(view -> commonActionCallbacks.onItemClicked(movie));
         return movieView;
     }
 

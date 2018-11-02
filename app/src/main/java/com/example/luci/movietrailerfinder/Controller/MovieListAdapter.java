@@ -80,12 +80,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Item
         if (getItemCount() - 1 <= i ){
             commonActionCallbacks.onLastElementReached();
         }
-        itemViewHolder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commonActionCallbacks.onItemClicked(movie);
-            }
-        });
+        itemViewHolder.container.setOnClickListener(view -> commonActionCallbacks.onItemClicked(movie));
     }
 
     @Override

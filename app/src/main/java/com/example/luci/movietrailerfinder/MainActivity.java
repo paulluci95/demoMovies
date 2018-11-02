@@ -93,38 +93,35 @@ public class MainActivity extends AppCompatActivity {
     private LayoutInflater inflater;
 
     /** The listener for starting a video when a thumbnail from movie detail page is clicked */
-    private final TrailerAdapter.ThumbnailCallback thumbnailCallback = new TrailerAdapter.ThumbnailCallback() {
-        @Override
-        public void onThumbnailClick(final String movieURLId) {
-            YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+    private final TrailerAdapter.ThumbnailCallback thumbnailCallback = movieURLId -> {
+        YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
-            Objects.requireNonNull(MainActivity.this.getSupportActionBar()).hide();
-            FragmentTransaction transaction = MainActivity.this.getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.main_view, youTubePlayerFragment).addToBackStack(null).commit();
+        Objects.requireNonNull(MainActivity.this.getSupportActionBar()).hide();
+        FragmentTransaction transaction = MainActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.main_view, youTubePlayerFragment).addToBackStack(null).commit();
 
-            youTubePlayerFragment.initialize(API_KEY_TMDB, new YouTubePlayer.OnInitializedListener() {
+        youTubePlayerFragment.initialize(API_KEY_TMDB, new YouTubePlayer.OnInitializedListener() {
 
-                @Override
-                public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer player, boolean wasRestored) {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer player, boolean wasRestored) {
 
-                    if (!wasRestored) {
-                        MainActivity.this.player = player;
-                        player.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-                        player.setFullscreen(true);
-                        player.loadVideo(movieURLId);
-                        player.play();
-                    }
+                if (!wasRestored) {
+                    MainActivity.this.player = player;
+                    player.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                    player.setFullscreen(true);
+                    player.loadVideo(movieURLId);
+                    player.play();
                 }
+            }
 
-                @Override
-                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
-                    String errorMessage = error.toString();
-                    Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                    Log.d("errorMessage:", errorMessage);
-                }
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult error) {
+                String errorMessage = error.toString();
+                Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                Log.d("errorMessage:", errorMessage);
+            }
 
-            });
-        }
+        });
     };
 
     /** The listener for both display types */
@@ -200,12 +197,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showSetDisplayDialog() {
         DisplaySettings dialogFragment = new DisplaySettings();
-        dialogFragment.setSelectViewTypeCallback(new DisplaySettings.ViewTypeSelectedCallback() {
-            @Override
-            public void onViewTypeSelected(ViewType viewType) {
-                currentViewType = viewType;
-                loadDefaultView(viewType);
-            }
+        dialogFragment.setSelectViewTypeCallback(viewType -> {
+            currentViewType = viewType;
+            loadDefaultView(viewType);
         });
         dialogFragment.show(getSupportFragmentManager(), "display_settings");
     }
