@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     /** The base url of used API */
-    public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String MOVIE_BASE_URL = "https://api.themoviedb.org/3/movie/";
 
     /** The base url for downloading images  */
     public static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500/";
@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
     /** The container for views */
     @BindView(R.id.main_view)
     FrameLayout flContainer;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     /** The reference of LayoutInflater */
     private LayoutInflater inflater;
@@ -154,10 +157,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.toolbar_title);
         setSupportActionBar(toolbar);
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(MOVIE_BASE_URL).addConverterFactory(GsonConverterFactory.create()).build();
         restClientInterface = retrofit.create(RESTClientInterface.class);
         inflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         getMoviesList();
